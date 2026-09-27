@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pulse - High-velocity team project and task management dashboard designed for seamless collaboration.">
+  <title>Pulse — Team Dashboard</title>
+
+  <!-- Google Fonts: Inter (600, 700) & Open Sans (400) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Accessible Skip to Content Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- =====================================================================
+       AUTHENTICATION / LOGIN SCREEN (Dedicated Full Page)
+       ===================================================================== -->
+  <section id="auth-screen" class="auth-screen" aria-label="Sign in to Pulse" hidden>
+    <div class="auth-card">
+      <div class="auth-brand">
+        <span class="brand-icon auth-logo-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+        </span>
+        <h1 class="auth-brand-name">Pulse</h1>
+      </div>
+
+      <div class="auth-header">
+        <h2 class="auth-title">Welcome back</h2>
+        <p class="auth-subtitle">Sign in to your team workspace to manage tasks, velocity, and projects.</p>
+      </div>
+
+      <!-- Quick Demo Account Fill Banner -->
+      <div class="demo-auth-banner">
+        <div class="demo-badge">Quick Demo Access</div>
+        <p class="demo-text">Click below to auto-fill lead engineer credentials:</p>
+        <button type="button" id="demo-login-btn" class="btn btn-secondary demo-fill-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span>Use Demo: Alex Rivera (Lead)</span>
+        </button>
+      </div>
+
+      <form id="login-form" class="auth-form" novalidate>
+        <div class="form-group">
+          <label for="login-email" class="form-label">Work Email <span class="required" aria-hidden="true">*</span></label>
+          <input 
+            type="email" 
+            id="login-email" 
+            name="email" 
+            class="form-input" 
+            placeholder="alex.rivera@pulse.workspace" 
+            autocomplete="email" 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <div class="form-label-row">
+            <label for="login-password" class="form-label">Password <span class="required" aria-hidden="true">*</span></label>
+            <button type="button" id="forgot-password-btn" class="text-link-btn" aria-label="Recover forgotten password">Forgot password?</button>
+          </div>
+          <div class="password-input-wrapper">
+            <input 
+              type="password" 
+              id="login-password" 
+              name="password" 
+              class="form-input" 
+              placeholder="••••••••" 
+              autocomplete="current-password" 
+              required
+            >
+            <button type="button" id="toggle-password-btn" class="icon-btn pass-toggle-btn" aria-label="Show password as plain text">
+              <svg id="eye-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label class="checkbox-label">
+            <input type="checkbox" id="remember-me-checkbox" class="task-checkbox" checked>
+            <span>Keep me signed in on this device</span>
+          </label>
+        </div>
+
+        <div id="login-feedback" class="auth-feedback" role="alert" aria-live="polite"></div>
+
+        <button type="submit" id="login-submit-btn" class="btn btn-primary auth-submit-btn">
+          <span>Sign In to Workspace</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </form>
+
+      <div class="auth-footer-note">
+        <p>&copy; 2026 Pulse. Pure Vanilla Architecture. Enterprise grade security.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       MAIN DASHBOARD APPLICATION
+       ===================================================================== -->
+  <div id="dashboard-app" class="app-layout">
+    <!-- ===================================================================
+         HEADER
+         =================================================================== -->
+    <header class="app-header" role="banner">
+      <div class="header-left">
+        <!-- Mobile Navigation Menu Toggle Button -->
+        <button 
+          type="button" 
+          id="menu-toggle-btn" 
+          class="icon-btn menu-toggle" 
+          aria-label="Toggle navigation menu" 
+          aria-expanded="false" 
+          aria-controls="sidebar-nav"
+        >
+          <svg class="icon icon-menu" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <!-- Brand Identity -->
+        <a href="#overview" class="brand-link" aria-label="Pulse Dashboard Home">
+          <span class="brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+          </span>
+          <span class="brand-name">Pulse</span>
+        </a>
+      </div>
+
+      <!-- Search Input (Tablet and Desktop min-width 768px) -->
+      <div class="header-search">
+        <label for="dashboard-search" class="visually-hidden">Search projects, tasks, or team members</label>
+        <div class="search-input-wrapper">
+          <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="search" 
+            id="dashboard-search" 
+            class="search-input" 
+            placeholder="Search tasks, projects, team..." 
+            autocomplete="off"
+          >
+          <kbd class="search-kbd" aria-hidden="true">/</kbd>
+        </div>
+      </div>
+
+      <!-- Header Action Items: Notifications & User Profile -->
+      <div class="header-actions">
+        <!-- Notification Dropdown Container -->
+        <div class="dropdown-container">
+          <button 
+            type="button" 
+            id="notifications-btn" 
+            class="icon-btn notif-btn" 
+            aria-label="View notifications (3 unread)" 
+            aria-expanded="false" 
+            aria-haspopup="true" 
+            aria-controls="notifications-panel"
+          >
+            <svg class="icon icon-bell" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="notif-badge" id="notif-badge" aria-hidden="true">3</span>
+          </button>
+
+          <!-- Notifications Dropdown Panel -->
+          <div 
+            id="notifications-panel" 
+            class="dropdown-panel notif-panel" 
+            role="region" 
+            aria-label="Recent notifications" 
+            hidden
+          >
+            <div class="dropdown-header">
+              <h2 class="dropdown-title">Notifications</h2>
+              <button type="button" id="mark-read-btn" class="text-link-btn">Mark all read</button>
+            </div>
+            <ul class="notif-list" role="list">
+              <li class="notif-item unread">
+                <span class="notif-dot" aria-hidden="true"></span>
+                <div class="notif-body">
+                  <p class="notif-text"><strong>Elena Rostova</strong> completed the design audit for <em>Mobile V2</em>.</p>
+                  <time class="notif-time" datetime="2026-09-27T10:15:00">18 minutes ago</time>
+                </div>
+              </li>
+              <li class="notif-item unread">
+                <span class="notif-dot" aria-hidden="true"></span>
+                <div class="notif-body">
+                  <p class="notif-text"><strong>Marcus Chen</strong> assigned you to <em>API Performance Optimization</em>.</p>
+                  <time class="notif-time" datetime="2026-09-27T09:30:00">1 hour ago</time>
+                </div>
+              </li>
+              <li class="notif-item unread">
+                <span class="notif-dot" aria-hidden="true"></span>
+                <div class="notif-body">
+                  <p class="notif-text"><strong>Sprint 14</strong> milestone was reached 2 days ahead of schedule.</p>
+                  <time class="notif-time" datetime="2026-09-26T17:00:00">Yesterday</time>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- User Profile Dropdown Menu (Interactive Login/Logout Access) -->
+        <div class="dropdown-container user-menu-container">
+          <button 
+            type="button" 
+            id="user-profile-btn" 
+            class="user-profile-btn" 
+            aria-label="User account menu: Alex Rivera" 
+            aria-expanded="false" 
+            aria-haspopup="true" 
+            aria-controls="user-menu-panel"
+          >
+            <div class="avatar-circle" id="header-avatar-circle" aria-hidden="true">AR</div>
+            <span class="avatar-status-dot" aria-label="Active status"></span>
+            <span class="user-profile-name" id="header-user-display-name">Alex Rivera</span>
+            <svg class="dropdown-chevron" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          <!-- User Menu Dropdown Panel -->
+          <div 
+            id="user-menu-panel" 
+            class="dropdown-panel user-menu-panel" 
+            role="menu" 
+            aria-label="User options" 
+            hidden
+          >
+            <div class="user-menu-header">
+              <div class="user-menu-avatar" id="menu-avatar" aria-hidden="true">AR</div>
+              <div class="user-menu-info">
+                <strong class="user-menu-name" id="menu-user-name">Alex Rivera</strong>
+                <span class="user-menu-email" id="menu-user-email">alex.rivera@pulse.workspace</span>
+                <span class="user-menu-role" id="menu-user-role">Engineering Lead</span>
+              </div>
+            </div>
+            <div class="user-menu-divider" role="separator"></div>
+            <ul class="user-menu-list" role="none">
+              <li role="none">
+                <a href="#settings" class="user-menu-item" role="menuitem" id="menu-settings-link">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                  </svg>
+                  <span>Account Settings</span>
+                </a>
+              </li>
+              <li role="none">
+                <button type="button" class="user-menu-item" role="menuitem" id="menu-shortcuts-btn">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                    <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h8M6 16h.01M18 16h.01"></path>
+                  </svg>
+                  <span>Keyboard Shortcuts</span>
+                </button>
+              </li>
+            </ul>
+            <div class="user-menu-divider" role="separator"></div>
+            <button type="button" class="user-menu-item logout-item" role="menuitem" id="logout-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              <span>Log Out</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===================================================================
+         SIDEBAR NAVIGATION
+         =================================================================== -->
+    <aside id="sidebar-nav" class="app-sidebar" aria-label="Main Navigation">
+      <div class="sidebar-header">
+        <a href="#overview" class="brand-link" aria-label="Pulse Dashboard Home">
+          <span class="brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+          </span>
+          <span class="brand-name">Pulse</span>
+        </a>
+        <button 
+          type="button" 
+          id="sidebar-close-btn" 
+          class="icon-btn sidebar-close" 
+          aria-label="Close navigation menu"
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="nav-container" aria-label="Workspace Pages">
+        <ul class="nav-list primary-nav" role="list">
+          <li class="nav-item">
+            <a href="#overview" class="nav-link active" data-view="overview" aria-current="page">
+              <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="9"></rect>
+                <rect x="14" y="3" width="7" height="5"></rect>
+                <rect x="14" y="12" width="7" height="9"></rect>
+                <rect x="3" y="16" width="7" height="5"></rect>
+              </svg>
+              <span class="nav-text">Overview</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#tasks" class="nav-link" data-view="tasks">
+              <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 11l3 3L22 4"></path>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              <span class="nav-text">Tasks</span>
+              <span class="nav-count-badge" id="sidebar-task-count" aria-label="3 active tasks">3</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#projects" class="nav-link" data-view="projects">
+              <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+              <span class="nav-text">Projects</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#team" class="nav-link" data-view="team">
+              <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <span class="nav-text">Team</span>
+              <span class="nav-sub-badge" aria-label="11 team members">11</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#reports" class="nav-link" data-view="reports">
+              <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+              <span class="nav-text">Reports</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Bottom Pinned Settings & Logout -->
+        <ul class="nav-list secondary-nav" role="list">
+          <li class="nav-item">
+            <a href="#settings" class="nav-link" data-view="settings">
+              <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span class="nav-text">Settings</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <button type="button" class="nav-link nav-btn-logout" id="sidebar-logout-btn">
+              <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              <span class="nav-text">Sign Out</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Mobile Scrim Overlay -->
+    <div id="sidebar-scrim" class="sidebar-scrim" aria-hidden="true"></div>
+
+    <!-- ===================================================================
+         MAIN CONTENT AREA (MULTI-VIEW ROUTING)
+         =================================================================== -->
+    <main id="main-content" class="app-main" tabindex="-1">
+
+      <!-- ===============================================================
+           VIEW 1: OVERVIEW (DASHBOARD DEFAULT)
+           =============================================================== -->
+      <section id="view-overview" class="dashboard-view active" aria-labelledby="overview-heading">
+        <!-- Greeting & Primary Action Bar -->
+        <header class="greeting-header">
+          <div class="greeting-content">
+            <h1 id="overview-heading" class="page-title">Good morning, <span class="user-greeting-name">Alex</span></h1>
+            <p class="page-subtitle">Here is the real-time operational status for your engineering team.</p>
+          </div>
+          <div class="greeting-actions">
+            <button type="button" class="btn btn-primary open-new-task-trigger">
+              <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>New task</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Stat Cards Grid (Animated Counters) -->
+        <section class="stats-section" aria-label="Key Performance Indicators">
+          <!-- Stat Card 1 -->
+          <article class="stat-card" data-stat="active-tasks">
+            <div class="stat-header">
+              <span class="stat-label">Active Tasks</span>
+              <span class="stat-icon-badge" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 11l3 3L22 4"></path>
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                </svg>
+              </span>
+            </div>
+            <div class="stat-value-row">
+              <span class="stat-number count-up" data-target="28" id="stat-active-tasks">0</span>
+            </div>
+            <div class="stat-footer">
+              <span class="stat-trend trend-positive" aria-label="Increased by 3 this week">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+                +3 this week
+              </span>
+              <span class="stat-context">across 4 sprints</span>
+            </div>
+          </article>
+
+          <!-- Stat Card 2 -->
+          <article class="stat-card" data-stat="projects-on-track">
+            <div class="stat-header">
+              <span class="stat-label">Projects on Track</span>
+              <span class="stat-icon-badge" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 14 14"></polyline>
+                </svg>
+              </span>
+            </div>
+            <div class="stat-value-row">
+              <span class="stat-number count-up" data-target="8" id="stat-projects-track">0</span>
+              <span class="stat-unit">/ 10</span>
+            </div>
+            <div class="stat-footer">
+              <span class="stat-trend trend-positive" aria-label="80 percent completion rate">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                80% delivery rate
+              </span>
+              <span class="stat-context">Quarter Q3</span>
+            </div>
+          </article>
+
+          <!-- Stat Card 3 -->
+          <article class="stat-card alert-card" data-stat="overdue">
+            <div class="stat-header">
+              <span class="stat-label">Overdue</span>
+              <span class="stat-icon-badge alert" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </span>
+            </div>
+            <div class="stat-value-row">
+              <span class="stat-number count-up text-alert" data-target="2" id="stat-overdue">0</span>
+            </div>
+            <div class="stat-footer">
+              <span class="stat-trend trend-alert" aria-label="Action required">
+                Requires review
+              </span>
+              <span class="stat-context">P1 blocker</span>
+            </div>
+          </article>
+
+          <!-- Stat Card 4 -->
+          <article class="stat-card" data-stat="team-utilization">
+            <div class="stat-header">
+              <span class="stat-label">Team Utilization</span>
+              <span class="stat-icon-badge" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="8.5" cy="7" r="4"></circle>
+                  <polyline points="17 11 19 13 23 9"></polyline>
+                </svg>
+              </span>
+            </div>
+            <div class="stat-value-row">
+              <span class="stat-number count-up" data-target="92" id="stat-utilization">0</span>
+              <span class="stat-suffix">%</span>
+            </div>
+            <div class="stat-footer">
+              <span class="stat-trend trend-positive" aria-label="Optimal capacity">
+                Optimal range
+              </span>
+              <span class="stat-context">11 active members</span>
+            </div>
+          </article>
+        </section>
+
+        <!-- Two-Column Operational Area (Stacks on mobile, splits at 900px) -->
+        <div class="dashboard-split-layout">
+          <!-- ===============================================================
+               TASK LIST SECTION
+               =============================================================== -->
+          <section class="dashboard-card tasks-section" aria-labelledby="tasks-heading">
+            <div class="card-header">
+              <div class="card-title-group">
+                <h2 id="tasks-heading" class="card-title">Team Tasks</h2>
+                <span class="counter-pill" id="task-filter-count" aria-live="polite">4 total</span>
+              </div>
+              <!-- Filter Chips (All / Open / Done) -->
+              <div class="filter-chips" role="group" aria-label="Filter tasks by status">
+                <button 
+                  type="button" 
+                  class="chip active" 
+                  data-filter="all" 
+                  aria-pressed="true"
+                >
+                  All
+                </button>
+                <button 
+                  type="button" 
+                  class="chip" 
+                  data-filter="open" 
+                  aria-pressed="false"
+                >
+                  Open
+                </button>
+                <button 
+                  type="button" 
+                  class="chip" 
+                  data-filter="done" 
+                  aria-pressed="false"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+
+            <!-- Dynamic Task List -->
+            <ul class="task-items-list" id="task-items-list" role="list">
+              <!-- Rendered dynamically by script.js -->
+            </ul>
+          </section>
+
+          <!-- ===============================================================
+               PROJECTS PANEL
+               =============================================================== -->
+          <section class="dashboard-card projects-section" aria-labelledby="projects-heading">
+            <div class="card-header">
+              <div class="card-title-group">
+                <h2 id="projects-heading" class="card-title">Active Projects</h2>
+                <span class="counter-pill">3 active</span>
+              </div>
+              <a href="#projects" class="card-link-action" aria-label="View all active projects">
+                View all
+                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </a>
+            </div>
+
+            <div class="projects-list" role="list">
+              <!-- Project 1 -->
+              <article class="project-item" role="listitem">
+                <div class="project-item-header">
+                  <div>
+                    <h3 class="project-name">Design System Architecture</h3>
+                    <p class="project-meta">Lead: Maya Lin &bull; Due Oct 12</p>
+                  </div>
+                  <span class="status-tag status-track">On Track</span>
+                </div>
+                <div class="progress-container">
+                  <div class="progress-labels">
+                    <span class="progress-caption">Milestone 3 of 4</span>
+                    <span class="progress-percent" id="p1-percent">75%</span>
+                  </div>
+                  <div 
+                    class="progress-bar-bg" 
+                    role="progressbar" 
+                    aria-valuenow="75" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100" 
+                    aria-labelledby="p1-percent"
+                  >
+                    <div class="progress-bar-fill" style="width: 75%;"></div>
+                  </div>
+                </div>
+                <div class="project-item-footer">
+                  <div class="avatar-stack" aria-label="Team: Maya Lin, David Kim, Sarah Connor">
+                    <span class="mini-avatar" title="Maya Lin">ML</span>
+                    <span class="mini-avatar" title="David Kim">DK</span>
+                    <span class="mini-avatar" title="Sarah Connor">SC</span>
+                  </div>
+                  <span class="project-task-summary">18/24 tasks completed</span>
+                </div>
+              </article>
+
+              <!-- Project 2 -->
+              <article class="project-item" role="listitem">
+                <div class="project-item-header">
+                  <div>
+                    <h3 class="project-name">Authentication Microservice</h3>
+                    <p class="project-meta">Lead: Kenji Sato &bull; Due Nov 04</p>
+                  </div>
+                  <span class="status-tag status-review">In Review</span>
+                </div>
+                <div class="progress-container">
+                  <div class="progress-labels">
+                    <span class="progress-caption">Security audit passed</span>
+                    <span class="progress-percent" id="p2-percent">90%</span>
+                  </div>
+                  <div 
+                    class="progress-bar-bg" 
+                    role="progressbar" 
+                    aria-valuenow="90" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100" 
+                    aria-labelledby="p2-percent"
+                  >
+                    <div class="progress-bar-fill" style="width: 90%;"></div>
+                  </div>
+                </div>
+                <div class="project-item-footer">
+                  <div class="avatar-stack" aria-label="Team: Kenji Sato, Priya Patel">
+                    <span class="mini-avatar" title="Kenji Sato">KS</span>
+                    <span class="mini-avatar" title="Priya Patel">PP</span>
+                  </div>
+                  <span class="project-task-summary">27/30 tasks completed</span>
+                </div>
+              </article>
+
+              <!-- Project 3 -->
+              <article class="project-item" role="listitem">
+                <div class="project-item-header">
+                  <div>
+                    <h3 class="project-name">Enterprise Analytics Portal</h3>
+                    <p class="project-meta">Lead: Olivia Vance &bull; Due Dec 01</p>
+                  </div>
+                  <span class="status-tag status-planning">Planning</span>
+                </div>
+                <div class="progress-container">
+                  <div class="progress-labels">
+                    <span class="progress-caption">Requirements discovery</span>
+                    <span class="progress-percent" id="p3-percent">35%</span>
+                  </div>
+                  <div 
+                    class="progress-bar-bg" 
+                    role="progressbar" 
+                    aria-valuenow="35" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100" 
+                    aria-labelledby="p3-percent"
+                  >
+                    <div class="progress-bar-fill" style="width: 35%;"></div>
+                  </div>
+                </div>
+                <div class="project-item-footer">
+                  <div class="avatar-stack" aria-label="Team: Olivia Vance, Alex Rivera">
+                    <span class="mini-avatar" title="Olivia Vance">OV</span>
+                    <span class="mini-avatar" title="Alex Rivera">AR</span>
+                  </div>
+                  <span class="project-task-summary">7/20 tasks completed</span>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           VIEW 2: FULL TASKS MANAGER
+           =============================================================== -->
+      <section id="view-tasks" class="dashboard-view" aria-labelledby="tasks-view-heading" hidden>
+        <header class="greeting-header">
+          <div class="greeting-content">
+            <h1 id="tasks-view-heading" class="page-title">Tasks Management</h1>
+            <p class="page-subtitle">Prioritize, manage, and complete your active sprint backlog items.</p>
+          </div>
+          <div class="greeting-actions">
+            <button type="button" class="btn btn-primary open-new-task-trigger">
+              <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Add task</span>
+            </button>
+          </div>
+        </header>
+
+        <div class="dashboard-card tasks-full-card">
+          <div class="card-header tasks-manage-header">
+            <div class="filter-chips full-task-filters" role="group" aria-label="Filter tasks">
+              <button type="button" class="chip active" data-filter="all">All Tasks</button>
+              <button type="button" class="chip" data-filter="open">Open</button>
+              <button type="button" class="chip" data-filter="done">Completed</button>
+            </div>
+            <div class="task-action-controls">
+              <button type="button" id="mark-all-done-btn" class="btn btn-secondary btn-sm">Mark All Done</button>
+              <button type="button" id="clear-completed-btn" class="btn btn-secondary btn-sm">Clear Completed</button>
+            </div>
+          </div>
+
+          <ul class="task-items-list full-task-list" id="full-tasks-list" role="list">
+            <!-- Dynamically populated by script.js -->
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           VIEW 3: PROJECTS PORTFOLIO
+           =============================================================== -->
+      <section id="view-projects" class="dashboard-view" aria-labelledby="projects-view-heading" hidden>
+        <header class="greeting-header">
+          <div class="greeting-content">
+            <h1 id="projects-view-heading" class="page-title">Projects Portfolio</h1>
+            <p class="page-subtitle">Track ongoing strategic initiatives, milestones, and deliverable timelines.</p>
+          </div>
+        </header>
+
+        <div class="projects-grid">
+          <!-- Project Card 1 -->
+          <article class="project-portfolio-card">
+            <div class="portfolio-card-header">
+              <div class="portfolio-meta">
+                <span class="status-tag status-track">On Track</span>
+                <span class="portfolio-due">Due Oct 12, 2026</span>
+              </div>
+              <h2 class="portfolio-title">Design System Architecture</h2>
+              <p class="portfolio-desc">Harmonized token system with WCAG AAA contrast, fluid typography formulas, and custom UI components.</p>
+            </div>
+            <div class="portfolio-progress">
+              <div class="progress-labels">
+                <span>Phase 3: Component Library</span>
+                <span class="progress-percent">75%</span>
+              </div>
+              <div class="progress-bar-bg" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar-fill" style="width: 75%;"></div>
+              </div>
+            </div>
+            <div class="portfolio-card-footer">
+              <div class="avatar-stack">
+                <span class="mini-avatar">ML</span>
+                <span class="mini-avatar">DK</span>
+                <span class="mini-avatar">SC</span>
+              </div>
+              <span class="portfolio-lead">Lead: <strong>Maya Lin</strong></span>
+            </div>
+          </article>
+
+          <!-- Project Card 2 -->
+          <article class="project-portfolio-card">
+            <div class="portfolio-card-header">
+              <div class="portfolio-meta">
+                <span class="status-tag status-review">In Review</span>
+                <span class="portfolio-due">Due Nov 04, 2026</span>
+              </div>
+              <h2 class="portfolio-title">Authentication Microservice</h2>
+              <p class="portfolio-desc">Zero-trust stateless session authentication token verification and audit log security pipeline.</p>
+            </div>
+            <div class="portfolio-progress">
+              <div class="progress-labels">
+                <span>Phase 4: Security Verification</span>
+                <span class="progress-percent">90%</span>
+              </div>
+              <div class="progress-bar-bg" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar-fill" style="width: 90%;"></div>
+              </div>
+            </div>
+            <div class="portfolio-card-footer">
+              <div class="avatar-stack">
+                <span class="mini-avatar">KS</span>
+                <span class="mini-avatar">PP</span>
+              </div>
+              <span class="portfolio-lead">Lead: <strong>Kenji Sato</strong></span>
+            </div>
+          </article>
+
+          <!-- Project Card 3 -->
+          <article class="project-portfolio-card">
+            <div class="portfolio-card-header">
+              <div class="portfolio-meta">
+                <span class="status-tag status-planning">Planning</span>
+                <span class="portfolio-due">Due Dec 01, 2026</span>
+              </div>
+              <h2 class="portfolio-title">Enterprise Analytics Portal</h2>
+              <p class="portfolio-desc">Real-time team throughput analytics with interactive charts, exportable CSVs, and sprint retrospectives.</p>
+            </div>
+            <div class="portfolio-progress">
+              <div class="progress-labels">
+                <span>Phase 1: Architecture RFC</span>
+                <span class="progress-percent">35%</span>
+              </div>
+              <div class="progress-bar-bg" role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar-fill" style="width: 35%;"></div>
+              </div>
+            </div>
+            <div class="portfolio-card-footer">
+              <div class="avatar-stack">
+                <span class="mini-avatar">OV</span>
+                <span class="mini-avatar">AR</span>
+              </div>
+              <span class="portfolio-lead">Lead: <strong>Olivia Vance</strong></span>
+            </div>
+          </article>
+
+          <!-- Project Card 4 -->
+          <article class="project-portfolio-card">
+            <div class="portfolio-card-header">
+              <div class="portfolio-meta">
+                <span class="status-tag status-track">On Track</span>
+                <span class="portfolio-due">Due Nov 20, 2026</span>
+              </div>
+              <h2 class="portfolio-title">Mobile Responsive Refactor</h2>
+              <p class="portfolio-desc">Adaptive layout optimization for ultra-wide monitors down to 320px mobile displays with fluid clamp().</p>
+            </div>
+            <div class="portfolio-progress">
+              <div class="progress-labels">
+                <span>Phase 2: CSS Grid Area Review</span>
+                <span class="progress-percent">60%</span>
+              </div>
+              <div class="progress-bar-bg" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar-fill" style="width: 60%;"></div>
+              </div>
+            </div>
+            <div class="portfolio-card-footer">
+              <div class="avatar-stack">
+                <span class="mini-avatar">ER</span>
+                <span class="mini-avatar">LG</span>
+              </div>
+              <span class="portfolio-lead">Lead: <strong>Elena Rostova</strong></span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           VIEW 4: TEAM DIRECTORY
+           =============================================================== -->
+      <section id="view-team" class="dashboard-view" aria-labelledby="team-view-heading" hidden>
+        <header class="greeting-header">
+          <div class="greeting-content">
+            <h1 id="team-view-heading" class="page-title">Engineering Team</h1>
+            <p class="page-subtitle">11 active team members driving product architecture and sprint delivery.</p>
+          </div>
+        </header>
+
+        <div class="team-grid" id="team-grid">
+          <!-- Team Member 1 -->
+          <article class="team-card">
+            <div class="team-card-header">
+              <div class="team-avatar-lg">AR</div>
+              <span class="team-status-pill online">Online</span>
+            </div>
+            <h2 class="team-name">Alex Rivera</h2>
+            <p class="team-role">Engineering Lead</p>
+            <p class="team-department">Platform Architecture</p>
+            <div class="team-stats-mini">
+              <span><strong>4</strong> Active Tasks</span>
+              <span><strong>94%</strong> Velocity</span>
+            </div>
+          </article>
+
+          <!-- Team Member 2 -->
+          <article class="team-card">
+            <div class="team-card-header">
+              <div class="team-avatar-lg">ML</div>
+              <span class="team-status-pill online">Online</span>
+            </div>
+            <h2 class="team-name">Maya Lin</h2>
+            <p class="team-role">Principal UX Engineer</p>
+            <p class="team-department">Design Systems</p>
+            <div class="team-stats-mini">
+              <span><strong>3</strong> Active Tasks</span>
+              <span><strong>98%</strong> Velocity</span>
+            </div>
+          </article>
+
+          <!-- Team Member 3 -->
+          <article class="team-card">
+            <div class="team-card-header">
+              <div class="team-avatar-lg">KS</div>
+              <span class="team-status-pill away">Focus Mode</span>
+            </div>
+            <h2 class="team-name">Kenji Sato</h2>
+            <p class="team-role">Staff Backend Engineer</p>
+            <p class="team-department">Cloud Infrastructure</p>
+            <div class="team-stats-mini">
+              <span><strong>5</strong> Active Tasks</span>
+              <span><strong>91%</strong> Velocity</span>
+            </div>
+          </article>
+
+          <!-- Team Member 4 -->
+          <article class="team-card">
+            <div class="team-card-header">
+              <div class="team-avatar-lg">ER</div>
+              <span class="team-status-pill online">Online</span>
+            </div>
+            <h2 class="team-name">Elena Rostova</h2>
+            <p class="team-role">Senior Frontend Engineer</p>
+            <p class="team-department">Web Core</p>
+            <div class="team-stats-mini">
+              <span><strong>2</strong> Active Tasks</span>
+              <span><strong>96%</strong> Velocity</span>
+            </div>
+          </article>
+
+          <!-- Team Member 5 -->
+          <article class="team-card">
+            <div class="team-card-header">
+              <div class="team-avatar-lg">PP</div>
+              <span class="team-status-pill online">Online</span>
+            </div>
+            <h2 class="team-name">Priya Patel</h2>
+            <p class="team-role">Security & Reliability Lead</p>
+            <p class="team-department">Infrastructure</p>
+            <div class="team-stats-mini">
+              <span><strong>3</strong> Active Tasks</span>
+              <span><strong>93%</strong> Velocity</span>
+            </div>
+          </article>
+
+          <!-- Team Member 6 -->
+          <article class="team-card">
+            <div class="team-card-header">
+              <div class="team-avatar-lg">OV</div>
+              <span class="team-status-pill offline">Offline</span>
+            </div>
+            <h2 class="team-name">Olivia Vance</h2>
+            <p class="team-role">Data Systems Architect</p>
+            <p class="team-department">Enterprise Analytics</p>
+            <div class="team-stats-mini">
+              <span><strong>2</strong> Active Tasks</span>
+              <span><strong>89%</strong> Velocity</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           VIEW 5: VELOCITY & PERFORMANCE REPORTS
+           =============================================================== -->
+      <section id="view-reports" class="dashboard-view" aria-labelledby="reports-view-heading" hidden>
+        <header class="greeting-header">
+          <div class="greeting-content">
+            <h1 id="reports-view-heading" class="page-title">Performance Reports</h1>
+            <p class="page-subtitle">Sprint 14 analytics, velocity trends, and operational delivery metrics.</p>
+          </div>
+          <div class="greeting-actions">
+            <button type="button" id="export-report-btn" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Export CSV</span>
+            </button>
+          </div>
+        </header>
+
+        <div class="reports-container">
+          <div class="stats-section report-stats">
+            <article class="stat-card">
+              <span class="stat-label">Sprint Velocity</span>
+              <div class="stat-value-row">
+                <span class="stat-number">42</span>
+                <span class="stat-unit">pts</span>
+              </div>
+              <span class="stat-trend trend-positive">+14% vs Sprint 13</span>
+            </article>
+
+            <article class="stat-card">
+              <span class="stat-label">On-Time Delivery</span>
+              <div class="stat-value-row">
+                <span class="stat-number">94.2</span>
+                <span class="stat-suffix">%</span>
+              </div>
+              <span class="stat-trend trend-positive">Top decile</span>
+            </article>
+
+            <article class="stat-card">
+              <span class="stat-label">Cycle Time</span>
+              <div class="stat-value-row">
+                <span class="stat-number">2.4</span>
+                <span class="stat-unit">days</span>
+              </div>
+              <span class="stat-trend trend-positive">-0.6d improvement</span>
+            </article>
+
+            <article class="stat-card">
+              <span class="stat-label">Bug Defect Rate</span>
+              <div class="stat-value-row">
+                <span class="stat-number">0.3</span>
+                <span class="stat-suffix">%</span>
+              </div>
+              <span class="stat-trend trend-positive">Target &lt; 1%</span>
+            </article>
+          </div>
+
+          <div class="dashboard-split-layout">
+            <div class="dashboard-card">
+              <h2 class="card-title">Velocity Progression (Past 4 Sprints)</h2>
+              <div class="velocity-bars-wrapper">
+                <div class="velocity-row">
+                  <span class="v-label">Sprint 11</span>
+                  <div class="v-bar-track"><div class="v-bar-fill" style="width: 70%;"></div></div>
+                  <span class="v-val">34 pts</span>
+                </div>
+                <div class="velocity-row">
+                  <span class="v-label">Sprint 12</span>
+                  <div class="v-bar-track"><div class="v-bar-fill" style="width: 78%;"></div></div>
+                  <span class="v-val">37 pts</span>
+                </div>
+                <div class="velocity-row">
+                  <span class="v-label">Sprint 13</span>
+                  <div class="v-bar-track"><div class="v-bar-fill" style="width: 82%;"></div></div>
+                  <span class="v-val">39 pts</span>
+                </div>
+                <div class="velocity-row highlight">
+                  <span class="v-label">Sprint 14</span>
+                  <div class="v-bar-track"><div class="v-bar-fill highlight-fill" style="width: 92%;"></div></div>
+                  <span class="v-val">42 pts</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="dashboard-card">
+              <h2 class="card-title">Sprint Retrospective Notes</h2>
+              <ul class="retro-list">
+                <li class="retro-item positive">
+                  <span class="retro-icon" aria-hidden="true">&#10003;</span>
+                  <span>WCAG AA color audit completed 2 days ahead of schedule.</span>
+                </li>
+                <li class="retro-item positive">
+                  <span class="retro-icon" aria-hidden="true">&#10003;</span>
+                  <span>Zero regression bugs detected across mobile drawer breakpoints.</span>
+                </li>
+                <li class="retro-item attention">
+                  <span class="retro-icon" aria-hidden="true">&#9888;</span>
+                  <span>P1 blocker on Redis cluster latency under investigation by Kenji Sato.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===============================================================
+           VIEW 6: WORKSPACE & PROFILE SETTINGS
+           =============================================================== -->
+      <section id="view-settings" class="dashboard-view" aria-labelledby="settings-view-heading" hidden>
+        <header class="greeting-header">
+          <div class="greeting-content">
+            <h1 id="settings-view-heading" class="page-title">Workspace Settings</h1>
+            <p class="page-subtitle">Configure your profile identity, visual accessibility preferences, and session controls.</p>
+          </div>
+        </header>
+
+        <div class="settings-layout">
+          <!-- Profile Settings Form -->
+          <div class="dashboard-card settings-card">
+            <h2 class="card-title">User Profile</h2>
+            <form id="profile-settings-form" class="task-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="settings-name" class="form-label">Full Name</label>
+                  <input type="text" id="settings-name" class="form-input" value="Alex Rivera" required>
+                </div>
+                <div class="form-group">
+                  <label for="settings-email" class="form-label">Email Address</label>
+                  <input type="email" id="settings-email" class="form-input" value="alex.rivera@pulse.workspace" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="settings-role" class="form-label">Role Title</label>
+                  <input type="text" id="settings-role" class="form-input" value="Engineering Lead">
+                </div>
+                <div class="form-group">
+                  <label for="settings-dept" class="form-label">Department</label>
+                  <input type="text" id="settings-dept" class="form-input" value="Platform Architecture">
+                </div>
+              </div>
+              <div class="settings-actions">
+                <button type="submit" class="btn btn-primary">Save Profile Changes</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Application Preferences -->
+          <div class="dashboard-card settings-card">
+            <h2 class="card-title">Preferences & Accessibility</h2>
+            <div class="preference-list">
+              <div class="preference-row">
+                <div>
+                  <h3 class="pref-title">Prefer Reduced Motion</h3>
+                  <p class="pref-desc">Disables smooth number counting and drawer sliding animations.</p>
+                </div>
+                <input type="checkbox" id="pref-motion-toggle" class="task-checkbox" aria-label="Toggle reduced motion preference">
+              </div>
+
+              <div class="preference-row">
+                <div>
+                  <h3 class="pref-title">Sound Effects</h3>
+                  <p class="pref-desc">Play subtle auditory tone upon task completion.</p>
+                </div>
+                <input type="checkbox" id="pref-sound-toggle" class="task-checkbox" checked aria-label="Toggle sound effects">
+              </div>
+
+              <div class="preference-row">
+                <div>
+                  <h3 class="pref-title">Live Screen Reader Announcements</h3>
+                  <p class="pref-desc">Announce filter changes and task completions via ARIA live regions.</p>
+                </div>
+                <input type="checkbox" id="pref-aria-toggle" class="task-checkbox" checked aria-label="Toggle ARIA live announcements">
+              </div>
+            </div>
+          </div>
+
+          <!-- Danger Zone: Sign Out -->
+          <div class="dashboard-card settings-card danger-card">
+            <h2 class="card-title text-alert">Account Session</h2>
+            <p class="pref-desc">Signing out ends your active session on this device and redirects you to the login screen.</p>
+            <div class="settings-actions">
+              <button type="button" id="settings-logout-btn" class="btn btn-danger">
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Sign Out of Pulse</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ===================================================================
+         FOOTER
+         =================================================================== -->
+    <footer class="app-footer" role="contentinfo">
+      <div class="footer-container">
+        <p class="footer-copy">&copy; 2026 Pulse Workspace. Built for high-velocity teams.</p>
+        <div class="footer-links">
+          <span class="system-status-indicator" aria-label="All systems operational">
+            <span class="status-pulse-dot" aria-hidden="true"></span>
+            All systems operational
+          </span>
+          <a href="#privacy" class="footer-link">Privacy</a>
+          <a href="#terms" class="footer-link">Terms</a>
+          <a href="#support" class="footer-link">Support</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- =====================================================================
+       ACCESSIBLE NEW TASK DIALOG (HTML5 <dialog>)
+       ===================================================================== -->
+  <dialog id="new-task-dialog" class="task-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <h2 id="dialog-title" class="dialog-title">Create New Task</h2>
+        <button type="button" id="dialog-close-btn" class="icon-btn" aria-label="Close dialog">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <form id="new-task-form" class="task-form">
+        <div class="form-group">
+          <label for="task-title-input" class="form-label">Task Title <span class="required" aria-hidden="true">*</span></label>
+          <input 
+            type="text" 
+            id="task-title-input" 
+            name="taskTitle" 
+            class="form-input" 
+            placeholder="e.g., Audit WCAG color contrast tokens" 
+            required 
+            maxlength="120"
+          >
+          <span class="form-error" id="title-error" aria-live="polite"></span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="task-priority-select" class="form-label">Priority</label>
+            <select id="task-priority-select" name="taskPriority" class="form-select">
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="task-due-date" class="form-label">Due Date</label>
+            <input 
+              type="date" 
+              id="task-due-date" 
+              name="taskDueDate" 
+              class="form-input"
+            >
+          </div>
+        </div>
+
+        <div class="dialog-actions">
+          <button type="button" id="dialog-cancel-btn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Task</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- =====================================================================
+       KEYBOARD SHORTCUTS MODAL (<dialog>)
+       ===================================================================== -->
+  <dialog id="shortcuts-dialog" class="task-dialog shortcuts-dialog" aria-labelledby="shortcuts-title">
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <h2 id="shortcuts-title" class="dialog-title">Keyboard Shortcuts</h2>
+        <button type="button" id="shortcuts-close-btn" class="icon-btn" aria-label="Close shortcuts modal">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="shortcuts-list">
+        <div class="shortcut-item"><span>Focus search bar</span><kbd>/</kbd></div>
+        <div class="shortcut-item"><span>Open new task modal</span><kbd>N</kbd></div>
+        <div class="shortcut-item"><span>Close drawer / modal / menu</span><kbd>Esc</kbd></div>
+        <div class="shortcut-item"><span>Switch to Overview</span><kbd>Alt + 1</kbd></div>
+        <div class="shortcut-item"><span>Switch to Tasks</span><kbd>Alt + 2</kbd></div>
+        <div class="shortcut-item"><span>Switch to Projects</span><kbd>Alt + 3</kbd></div>
+        <div class="shortcut-item"><span>Switch to Team</span><kbd>Alt + 4</kbd></div>
+        <div class="shortcut-item"><span>Switch to Reports</span><kbd>Alt + 5</kbd></div>
+        <div class="shortcut-item"><span>Switch to Settings</span><kbd>Alt + 6</kbd></div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Live Toast Feedback Notification -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Live Announcer for Screen Readers -->
+  <div id="sr-announcer" class="visually-hidden" aria-live="assertive" aria-atomic="true"></div>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
