@@ -404,6 +404,21 @@
       }
     });
 
+    // Close user menu on navigation item clicks
+    const userHeaderLink = document.getElementById('menu-user-header-link');
+    if (userHeaderLink) {
+      userHeaderLink.addEventListener('click', () => {
+        closeUserMenu();
+      });
+    }
+
+    const settingsLink = document.getElementById('menu-settings-link');
+    if (settingsLink) {
+      settingsLink.addEventListener('click', () => {
+        closeUserMenu();
+      });
+    }
+
     // Shortcuts dialog button
     if (DOM.menuShortcutsBtn && DOM.shortcutsDialog) {
       DOM.menuShortcutsBtn.addEventListener('click', () => {
