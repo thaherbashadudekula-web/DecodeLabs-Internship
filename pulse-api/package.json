@@ -1,0 +1,24 @@
+{
+  "name": "pulse-api",
+  "version": "1.0.0",
+  "description": "Pulse API - In-memory RESTful backend API for team task and project management",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test.js"
+  },
+  "keywords": [
+    "express",
+    "rest-api",
+    "in-memory",
+    "task-management",
+    "dashboard"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

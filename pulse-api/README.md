@@ -4,7 +4,7 @@ In-memory RESTful backend API for the Pulse team task dashboard, featuring two-p
 
 [![Node Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Express Version](https://img.shields.io/badge/express-4.21.2-blue.svg)](https://expressjs.com/)
-[![License](https://img.shields.io/badge/license-ISC-green.svg)](./pulse-api/package.json)
+[![License](https://img.shields.io/badge/license-ISC-green.svg)](./package.json)
 [![Status](https://img.shields.io/badge/status-in%20development-orange.svg)]()
 
 ---

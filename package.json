@@ -1,0 +1,12 @@
+{
+  "name": "pulse-workspace",
+  "version": "1.0.0",
+  "description": "Pulse Task Dashboard - Week 1 Frontend and Week 2 Backend API",
+  "scripts": {
+    "start": "npm --prefix pulse-api start",
+    "dev": "npm --prefix pulse-api run dev",
+    "test": "npm --prefix pulse-api test",
+    "app": "node serve-app.js",
+    "serve:app": "node serve-app.js"
+  }
+}
