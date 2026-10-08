@@ -1,0 +1,9 @@
+{
+  "name": "pulse-frontend",
+  "version": "1.0.0",
+  "description": "Pulse Team Task Dashboard - Week 1 Responsive Frontend",
+  "main": "serve-app.js",
+  "scripts": {
+    "start": "node serve-app.js"
+  }
+}

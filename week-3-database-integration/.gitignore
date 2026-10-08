@@ -1,0 +1,17 @@
+# Dependency directories
+node_modules/
+
+# Logs
+npm-debug.log*
+*.log
+
+# Environment variables
+.env
+.env.local
+
+# SQLite database file and WAL artifacts
+data/pulse.db
+data/pulse.db-journal
+data/pulse.db-wal
+data/pulse.db-shm
+data/*.db

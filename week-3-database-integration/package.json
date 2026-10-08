@@ -1,0 +1,26 @@
+{
+  "name": "pulse-api",
+  "version": "1.0.0",
+  "description": "Pulse API - RESTful backend API for team task and project management backed by SQLite",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test.js",
+    "reset-db": "node db/reset.js"
+  },
+  "keywords": [
+    "express",
+    "rest-api",
+    "in-memory",
+    "task-management",
+    "dashboard"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

@@ -1,6 +1,7 @@
 # Dependency directories
 node_modules/
-pulse-api/node_modules/
+week-2-backend-api/node_modules/
+week-3-database-integration/node_modules/
 
 # Logs
 npm-debug.log*
@@ -15,3 +16,12 @@ Thumbs.db
 # Environment variables
 .env
 .env.local
+
+# SQLite Database Files & WAL artifacts
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+week-3-database-integration/data/*.db
+week-3-database-integration/data/*.db-wal
+week-3-database-integration/data/*.db-shm

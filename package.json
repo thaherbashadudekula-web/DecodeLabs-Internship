@@ -1,12 +1,12 @@
 {
-  "name": "pulse-workspace",
+  "name": "pulse-internship",
   "version": "1.0.0",
-  "description": "Pulse Task Dashboard - Week 1 Frontend and Week 2 Backend API",
+  "description": "Pulse Team Task Dashboard - DecodeLabs Full Stack Development Internship (Batch 2026)",
   "scripts": {
-    "start": "npm --prefix pulse-api start",
-    "dev": "npm --prefix pulse-api run dev",
-    "test": "npm --prefix pulse-api test",
-    "app": "node serve-app.js",
-    "serve:app": "node serve-app.js"
+    "start:week1": "npm --prefix week-1-responsive-frontend start",
+    "start:week2": "npm --prefix week-2-backend-api start",
+    "start:week3": "npm --prefix week-3-database-integration start",
+    "test:week2": "npm --prefix week-2-backend-api test",
+    "test:week3": "npm --prefix week-3-database-integration test"
   }
 }
